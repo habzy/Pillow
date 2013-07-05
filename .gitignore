@@ -1,0 +1,5 @@
+# not need to ignore the apk.
+/gen
+/bin/*/*
+/bin/*
+!bin/*.apk
