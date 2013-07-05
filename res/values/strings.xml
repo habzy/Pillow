@@ -3,6 +3,7 @@
 
     <string name="app_name">Pillow</string>
     <string name="share">Share to Weixin</string>
+     <string name="open">Open Weixin</string>
     <string name="action_settings">Settings</string>
     <string name="welcome">Wanna to share something to SNS</string>
 
