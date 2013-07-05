@@ -2,4 +2,5 @@
 /gen
 /bin/*/*
 /bin/*
-!bin/*.apk
+/bin
+!bin/Pillow_*.apk
