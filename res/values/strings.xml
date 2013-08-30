@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">Pillow</string>
+    <string name="buy">Buy a view</string>
     <string name="share">Share to Weixin</string>
     <string name="open">Open Weixin</string>
     <string name="confirm">Confirm</string>
