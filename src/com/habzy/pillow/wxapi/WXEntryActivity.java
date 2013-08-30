@@ -12,15 +12,19 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Activity;
 import android.content.Intent;
 
 import com.tencent.mm.sdk.openapi.BaseReq;
 import com.tencent.mm.sdk.openapi.BaseResp;
+import com.tencent.mm.sdk.openapi.ConstantsAPI;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.SendMessageToWX;
+import com.tencent.mm.sdk.openapi.ShowMessageFromWX;
+import com.tencent.mm.sdk.openapi.ShowMessageFromWX.Req;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tencent.mm.sdk.openapi.WXMediaMessage;
 import com.tencent.mm.sdk.openapi.WXTextObject;
@@ -39,30 +43,34 @@ public class WXEntryActivity extends Activity implements OnClickListener, IWXAPI
 
     private static final String TAG = WXEntryActivity.class.getSimpleName();
 
-    private Button mShareButton;
+    private TextView mTextConten;
 
     private IWXAPI api;
 
-    private Button mOpenButton;
+    private Button mConfirmButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_entry_from_wx);
         api = WXAPIFactory.createWXAPI(this, APP_ID, false);
         boolean isRegistered = api.registerApp(APP_ID);
         Log.d(TAG, "is registered:" + isRegistered);
 
-        mShareButton = (Button) findViewById(R.id.share);
-        mShareButton.setOnClickListener(this);
+        mTextConten = (TextView) findViewById(R.id.content);
 
-        mOpenButton = (Button) findViewById(R.id.open);
-        mOpenButton.setOnClickListener(this);
+        mConfirmButton = (Button) findViewById(R.id.confirm);
+        mConfirmButton.setOnClickListener(this);
+
+        Intent intent = getIntent();
+        setIntent(intent);
+        api.handleIntent(intent, this);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        Log.d(TAG, "onNewIntent");
         setIntent(intent);
         api.handleIntent(intent, this);
     }
@@ -74,12 +82,9 @@ public class WXEntryActivity extends Activity implements OnClickListener, IWXAPI
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.share:
-                Log.d(TAG, "Click share button");
-                sendToWeiXin();
-                break;
-            case R.id.open:
-                Log.d(TAG, "Click open button: opened:" + api.openWXApp());
+            case R.id.confirm:
+                Log.d(TAG, "Click confirm button");
+                // sendToWeiXin();
                 break;
             default:
                 break;
@@ -88,51 +93,6 @@ public class WXEntryActivity extends Activity implements OnClickListener, IWXAPI
     }
 
     private void sendToWeiXin() {
-        // final WXAppExtendObject appdata = new WXAppExtendObject();
-        // final String path = SDCARD_ROOT + "/DCIM/Camera/20130705_150018.jpg";
-        // appdata.filePath = path;
-        // appdata.extInfo = "this is ext info 111";
-        //
-        // Log.d(TAG, "path:" + path);
-        // final WXMediaMessage msg = new WXMediaMessage();
-        //
-        // Bitmap thumb = BitmapFactory.decodeResource(getResources(),
-        // R.drawable.ic_launcher);
-        // msg.thumbData = Util.bmpToByteArray(thumb, true);
-        // msg.setThumbImage(Util.extractThumbNail(path, 150, 150, true));
-        // msg.title = "this is title 1";
-        // msg.description = "this is description 1";
-        // msg.mediaObject = appdata;
-
-        // WXImageObject imgObj = new WXImageObject();
-        // imgObj.setImagePath(path);
-        //
-        // WXMediaMessage msg = new WXMediaMessage();
-        // msg.mediaObject = imgObj;
-        //
-        // Bitmap bmp = BitmapFactory.decodeFile(path);
-        // Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, 150, 150, true);
-        // bmp.recycle();
-        // msg.thumbData = Util.bmpToByteArray(thumbBmp, true);
-
-        // Bitmap bmp = BitmapFactory.decodeResource(getResources(),
-        // R.drawable.ic_launcher);
-        // WXImageObject imgObj = new WXImageObject(bmp);
-        //
-        // WXMediaMessage msg = new WXMediaMessage();
-        // msg.mediaObject = imgObj;
-        //
-        // Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, 150, 150, true);
-        // bmp.recycle();
-        // msg.thumbData = Util.bmpToByteArray(thumbBmp, true);
-        //
-        // SendMessageToWX.Req req = new SendMessageToWX.Req();
-        // req.transaction = buildTransaction("img");
-        // req.message = msg;
-        // req.scene = SendMessageToWX.Req.WXSceneSession;
-        // boolean result = api.sendReq(req);
-        // Log.d(TAG, "Is sended:" + result);
-
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         creatTextMsg(req);
         boolean result = api.sendReq(req);
@@ -154,7 +114,7 @@ public class WXEntryActivity extends Activity implements OnClickListener, IWXAPI
 
         req.transaction = buildTransaction("text");
         req.message = msg;
-//        req.scene = SendMessageToWX.Req.WXSceneSession;
+        // req.scene = SendMessageToWX.Req.WXSceneSession;
     }
 
     private String buildTransaction(final String type) {
@@ -171,6 +131,32 @@ public class WXEntryActivity extends Activity implements OnClickListener, IWXAPI
     @Override
     public void onReq(BaseReq req) {
         Log.d(TAG, "onReq");
+        switch (req.getType()) {
+            case ConstantsAPI.COMMAND_GETMESSAGE_FROM_WX:
+                goToGetMsg();
+                break;
+            case ConstantsAPI.COMMAND_SHOWMESSAGE_FROM_WX:
+                goToShowMsg((ShowMessageFromWX.Req) req);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * @param req
+     */
+    private void goToShowMsg(Req req) {
+        // TODO Auto-generated method stub
+        Log.d(TAG, "goToShowMsg");
+    }
+
+    /**
+     * 
+     */
+    private void goToGetMsg() {
+        // TODO Auto-generated method stub
+        Log.d(TAG, "goToGetMsg");
     }
 
     /*

@@ -6,12 +6,18 @@
 package com.habzy.pillow;
 
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 
+import com.android.vending.billing.IInAppBillingService;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.SendMessageToWX;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -30,10 +36,28 @@ public class MainActivity extends Activity implements OnClickListener {
 
     private IWXAPI api;
 
+    private IInAppBillingService mService;
+
+    ServiceConnection mServiceConn = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mService = null;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mService = IInAppBillingService.Stub.asInterface(service);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        bindService(new Intent("com.android.vending.billing.InAppBillingService.BIND"),
+                mServiceConn, Context.BIND_AUTO_CREATE);
+
         api = WXAPIFactory.createWXAPI(this, APP_ID, true);
         api.registerApp(APP_ID);
 
@@ -57,7 +81,6 @@ public class MainActivity extends Activity implements OnClickListener {
                 break;
             case R.id.open:
                 Log.d(TAG, "Click open button: opened:" + api.openWXApp());
-                sendToWeiXin();
                 break;
             default:
                 break;
@@ -76,7 +99,7 @@ public class MainActivity extends Activity implements OnClickListener {
      * Create Message type is text.
      */
     private void creatTextMsg(SendMessageToWX.Req req) {
-        String text = "Test from Pillow";
+        String text = "Text from Pillow";
         WXTextObject textObj = new WXTextObject();
         textObj.text = text;
 
@@ -94,6 +117,14 @@ public class MainActivity extends Activity implements OnClickListener {
     private String buildTransaction(final String type) {
         return (type == null) ? String.valueOf(System.currentTimeMillis()) : type
                 + System.currentTimeMillis();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mServiceConn != null) {
+            unbindService(mServiceConn);
+        }
     }
 
 }
