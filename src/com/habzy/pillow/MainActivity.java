@@ -6,6 +6,7 @@
 package com.habzy.pillow;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
@@ -41,6 +42,8 @@ public class MainActivity extends Activity implements OnClickListener {
     private static final String APP_SPECIFIC = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkbGhaVegh5bNOBVzyF7rX/i9FTtPsNxrl/qXZuZHqgBVLtbOmnt9XsT8UB698AtxxQCr10jjFhbzGxhfOSGl5MyZKXBAhjRHAyf2NyoKDNA2IH7yfVxxL9QSIOSE6IAjfVcrBaVcnSai2n8G3uAQGxVQgVmYyGSLtzAPf9kpQLrMTBk+6IF3WYFdu6RqnzIoHbB9vGQTq8O0KuKP6zjgbNzcntJvJda6KzMV0nj4PUozUUonZW0DU5ZxM2t1fjsB97U7eRfMKZisTuHrUiINfM3ZDL5UBtVZnQiigKxPclVm7auHHoU7Jg/NCRj7UCe3NAxlpHxtEGMWPtf0rMnDBwIDAQAB";
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    protected static final int UPDATE_BUY = 0;
 
     private Button mBuyButton;
 
@@ -91,6 +94,8 @@ public class MainActivity extends Activity implements OnClickListener {
                                         Log.d(TAG, "sku:" + sku + ";price:" + price);
                                         if (sku.equals(mPillow_0001Name)) {
                                             mHashMap.put(mPillow_0001Name, price);
+                                            mHandler.obtainMessage(UPDATE_BUY, price)
+                                                    .sendToTarget();
                                         }
 
                                     } catch (JSONException e) {
@@ -108,6 +113,20 @@ public class MainActivity extends Activity implements OnClickListener {
                 };
             }.start();
         }
+    };
+
+    private Handler mHandler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            switch (msg.what) {
+                case UPDATE_BUY:
+                    mBuyButton.setText("Use " + (String) msg.obj + " To buy");
+                    mBuyButton.setVisibility(View.VISIBLE);
+                    break;
+
+                default:
+                    break;
+            }
+        };
     };
 
     @Override
