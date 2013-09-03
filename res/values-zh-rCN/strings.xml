@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">枕头</string>
-
+    <string name="buy">购买一个</string>
+    <string name="share">分享到微信</string>
+    <string name="share_app">分享应用到微信</string>
+    <string name="open">打开微信</string>
+    <string name="confirm">确认</string>
+    <string name="action_settings">设置</string>
+    <string name="welcome">Wanna to share something to SNS</string>
 </resources>

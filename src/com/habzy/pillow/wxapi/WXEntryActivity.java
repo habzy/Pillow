@@ -24,11 +24,11 @@ import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.SendMessageToWX;
 import com.tencent.mm.sdk.openapi.ShowMessageFromWX;
+import com.tencent.mm.sdk.openapi.WXAppExtendObject;
 import com.tencent.mm.sdk.openapi.ShowMessageFromWX.Req;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tencent.mm.sdk.openapi.WXMediaMessage;
 import com.tencent.mm.sdk.openapi.WXTextObject;
-
 import com.habzy.pillow.R;
 
 /**
@@ -149,6 +149,23 @@ public class WXEntryActivity extends Activity implements OnClickListener, IWXAPI
     private void goToShowMsg(Req req) {
         // TODO Auto-generated method stub
         Log.d(TAG, "goToShowMsg");
+        
+        WXMediaMessage wxMsg = req.message;
+        WXAppExtendObject obj = (WXAppExtendObject) wxMsg.mediaObject;
+        
+        StringBuffer msg = new StringBuffer();
+        msg.append("description: ");
+        msg.append(wxMsg.description);
+        msg.append("\n");
+        msg.append("extInfo: ");
+        msg.append(obj.extInfo);
+        msg.append("\n");
+        msg.append("filePath: ");
+        msg.append(obj.filePath);
+        
+        Log.d(TAG, "description:" + wxMsg.description);
+        Log.d(TAG, "extInfo:" + obj.extInfo);
+        Log.d(TAG, "filePath:" + obj.filePath);
     }
 
     /**

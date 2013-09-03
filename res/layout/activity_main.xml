@@ -38,6 +38,14 @@
         android:text="@string/buy"
         android:textSize="20dp"
         android:visibility="gone" />
+    
+    <Button
+        android:id="@+id/share_app"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/buy"
+        android:text="@string/share_app"
+        android:textSize="20dp" />
 
 </RelativeLayout>
 
