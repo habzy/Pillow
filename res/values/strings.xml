@@ -9,5 +9,6 @@
     <string name="confirm">Confirm</string>
     <string name="action_settings">Settings</string>
     <string name="welcome">Wanna to share something to SNS</string>
+    <string name="show_from_wx_tip">This screen is used to show some app data which requested by WeiXin</string>
 
 </resources>

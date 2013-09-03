@@ -30,6 +30,8 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tencent.mm.sdk.openapi.WXMediaMessage;
 import com.tencent.mm.sdk.openapi.WXTextObject;
 import com.habzy.pillow.R;
+import com.habzy.pillow.ShowFromWXActivity;
+
 
 /**
  * Detailed description
@@ -166,6 +168,13 @@ public class WXEntryActivity extends Activity implements OnClickListener, IWXAPI
         Log.d(TAG, "description:" + wxMsg.description);
         Log.d(TAG, "extInfo:" + obj.extInfo);
         Log.d(TAG, "filePath:" + obj.filePath);
+        
+        Intent intent = new Intent(this, ShowFromWXActivity.class);
+        intent.putExtra("showmsg_title", wxMsg.title);
+        intent.putExtra("showmsg_message", msg.toString());
+        intent.putExtra("showmsg_thumb_data", wxMsg.thumbData);
+        startActivity(intent);
+        finish();
     }
 
     /**
