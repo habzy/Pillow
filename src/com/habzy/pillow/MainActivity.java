@@ -91,8 +91,7 @@ public class MainActivity extends Activity implements OnClickListener {
             Log.d(TAG, "get inventory skuDetails  " + skuDetails);
             
             String skuPrice = skuDetails.getPrice();
-            mHandler.obtainMessage(UPDATE_BUY, skuPrice)
-            .sendToTarget();
+            mHandler.obtainMessage(UPDATE_BUY, skuPrice).sendToTarget();
             Log.d(TAG, "get inventory skuDetails  price:" + skuPrice);
         }
     };
