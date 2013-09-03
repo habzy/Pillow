@@ -1,6 +1,7 @@
 /**
  * A very good Util class from WeiXin SDK demo
  */
+
 package com.habzy.pillow.util;
 
 import java.io.ByteArrayOutputStream;
@@ -8,10 +9,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import junit.framework.Assert;
 
@@ -113,7 +117,7 @@ public class Util {
         byte[] b = null;
         try {
             RandomAccessFile in = new RandomAccessFile(fileName, "r");
-            b = new byte[len]; 
+            b = new byte[len];
             in.seek(offset);
             in.readFully(b);
             in.close();
@@ -209,4 +213,37 @@ public class Util {
 
         return null;
     }
+
+    /**
+     * @param str
+     * @return
+     */
+    public static String getMD5(String str) {
+        MessageDigest messageDigest = null;
+        try {
+            messageDigest = MessageDigest.getInstance("MD5");
+            messageDigest.reset();
+            messageDigest.update(str.getBytes("UTF-8"));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        if (null != messageDigest) {
+            byte[] byteArray = messageDigest.digest();
+            StringBuffer md5Buffer = new StringBuffer();
+            for (int i = 0; i < byteArray.length; i++) {
+                String hexString = Integer.toHexString(0xFF & byteArray[i]);
+                if (hexString.length() == 1) {
+                    md5Buffer.append("0").append(hexString);
+                } else {
+                    md5Buffer.append(hexString);
+                }
+            }
+            return md5Buffer.toString();
+        } else {
+            return null;
+        }
+    }
+
 }
