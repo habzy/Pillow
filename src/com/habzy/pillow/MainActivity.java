@@ -34,6 +34,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class MainActivity extends Activity implements OnClickListener {
 
@@ -182,8 +183,11 @@ public class MainActivity extends Activity implements OnClickListener {
             public void run() {
                 if (null != mService && mHashMap.containsKey(mPillow_0001Name)) {
                     try {
+                        long time = System.currentTimeMillis();
+                        Random r = new Random();
+                        String payload = time + "p" + r.nextInt(1000) + r.nextInt(1000);
                         Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(),
-                                mPillow_0001Name, "inapp", APP_SPECIFIC);
+                                mPillow_0001Name, "inapp", payload);
                         PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
                         try {
                             startIntentSenderForResult(pendingIntent.getIntentSender(), 1001,
