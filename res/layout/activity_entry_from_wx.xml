@@ -22,5 +22,13 @@
         android:layout_alignParentBottom="true"
         android:textSize="20dp"
         android:text="@string/confirm" />
+    
+    <Button
+        android:id="@+id/confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:textSize="20dp"
+        android:text="@string/confirm" />
 
 </RelativeLayout>
