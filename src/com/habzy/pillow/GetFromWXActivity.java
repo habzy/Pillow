@@ -86,30 +86,7 @@ public class GetFromWXActivity extends Activity {
                     file.mkdirs();
                 }
 
-//                CameraUtil.takePhoto(GetFromWXActivity.this, dir, "get_appdata", 0x100);
-                
-                Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
-                Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, 150, 150, true);
-                bmp.recycle();
-                
-                final WXAppExtendObject appdata = new WXAppExtendObject();
-                appdata.filePath = "this is ext path";
-                appdata.extInfo = "this is ext info";
-
-                final WXMediaMessage msg = new WXMediaMessage();
-                msg.setThumbImage(thumbBmp);
-                msg.title = "this is title";
-                msg.description = "this is description";
-                msg.mediaObject = appdata;
-
-                GetMessageFromWX.Resp resp = new GetMessageFromWX.Resp();
-                resp.transaction = buildTransaction();
-                resp.message = msg;
-
-                boolean sendRespResult = api.sendResp(resp);
-                Log.d(TAG, "send response to weixin success? " + sendRespResult);
-                
-                finish();
+                CameraUtil.takePhoto(GetFromWXActivity.this, dir, "get_appdata", 0x100);
             }
         });
     }
@@ -128,8 +105,7 @@ public class GetFromWXActivity extends Activity {
             case 0x100: {
                 if (resultCode == RESULT_OK) {
                     final WXAppExtendObject appdata = new WXAppExtendObject();
-                    final String path = CameraUtil.getResultPhotoPath(this, data, SDCARD_ROOT
-                            + "/tencent/");
+                    final String path = SDCARD_ROOT + "/tencent/get_appdata";
                     appdata.filePath = path;
                     appdata.extInfo = "this is ext info";
 
