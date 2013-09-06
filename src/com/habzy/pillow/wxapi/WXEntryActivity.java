@@ -29,8 +29,11 @@ import com.tencent.mm.sdk.openapi.ShowMessageFromWX.Req;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tencent.mm.sdk.openapi.WXMediaMessage;
 import com.tencent.mm.sdk.openapi.WXTextObject;
+import com.habzy.pillow.GetFromWXActivity;
+import com.habzy.pillow.MainActivity;
 import com.habzy.pillow.R;
 import com.habzy.pillow.ShowFromWXActivity;
+
 
 
 /**
@@ -55,7 +58,7 @@ public class WXEntryActivity extends Activity implements OnClickListener, IWXAPI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry_from_wx);
-        api = WXAPIFactory.createWXAPI(this, APP_ID, false);
+        api = WXAPIFactory.createWXAPI(this, MainActivity.APP_ID, false);
         boolean isRegistered = api.registerApp(APP_ID);
         Log.d(TAG, "is registered:" + isRegistered);
 
@@ -64,9 +67,7 @@ public class WXEntryActivity extends Activity implements OnClickListener, IWXAPI
         mConfirmButton = (Button) findViewById(R.id.confirm);
         mConfirmButton.setOnClickListener(this);
 
-        Intent intent = getIntent();
-        setIntent(intent);
-        api.handleIntent(intent, this);
+        api.handleIntent(getIntent(), this);
     }
 
     @Override
@@ -182,7 +183,12 @@ public class WXEntryActivity extends Activity implements OnClickListener, IWXAPI
      */
     private void goToGetMsg() {
         // TODO Auto-generated method stub
-        Log.d(TAG, "goToGetMsg");
+        Log.d(TAG, "Weixin want to get a msg from our app");
+        
+        Intent intent = new Intent(this, GetFromWXActivity.class);
+        intent.putExtras(getIntent());
+        startActivity(intent);
+        finish();
     }
 
     /*
